@@ -6,7 +6,7 @@ on:
       asset_name:
         description: 'Asset'
         required: true
-        default: 'USDBRL_OTC'
+        default: 'USDBRL_OTC1'
 
 jobs:
   build:
