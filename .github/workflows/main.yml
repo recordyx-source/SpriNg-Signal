@@ -1,0 +1,39 @@
+name: Generate Quotex Signals
+
+on:
+  workflow_dispatch:
+    inputs:
+      asset_name:
+        description: 'Asset'
+        required: true
+        default: 'USDBRL_OTC'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        pip install pandas pandas-ta quotexapi==2.1.2 --quiet
+
+    - name: Run Backtest
+      env:
+        QUOTEX_EMAIL: ${{ secrets.MY_EMAIL }}
+        QUOTEX_PASS: ${{ secrets.MY_PASS }}
+        ASSET: ${{ github.event.inputs.asset_name }}
+      run: |
+        python script.py
+
+    - name: Upload Signals File
+      uses: actions/upload-artifact@v4
+      with:
+        name: quotex-signals-file
+        path: all_perfect_signals.txt
